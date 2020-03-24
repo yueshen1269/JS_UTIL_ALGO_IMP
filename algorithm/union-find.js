@@ -46,15 +46,10 @@ class UnionFindByFastUnion {
   }
   // 查找元素的根节点所在的下标
   getRoot(a) {
-    // 当前节点的值
-    let aRoot = this.arr[a];
-    // 当前节点所在的下标值
-    let aRootI = a;
-    while(aRoot !== aRootI) {
-      aRoot = this.arr[aRoot];
-      aRootI = aRoot;
+    while(a !== this.arr[a]) {
+      a = this.arr[a];
     }
-    return aRoot;
+    return a;
   }
   // 将两个元素所在的根节点联结起来，使b->root元素的值为a->root元素的值
   // 如果一个元素的值等于它的下标（即初始值），那么这个元素是一个根节点
@@ -66,10 +61,10 @@ class UnionFindByFastUnion {
 }
 
 /**
- * 并查集实现之 加权路径 fast-union算法
+ * 并查集实现之 加权的fast-union算法
  * T(N)~ O(NlogN)
  *
- * @class UnionFindByFastUnion
+ * @class UnionFindByFastUnion2
  */
 class UnionFindByFastUnion2 {
   constructor(N){
@@ -85,15 +80,56 @@ class UnionFindByFastUnion2 {
   }
   // 查找元素的根节点所在的下标
   getRoot(a) {
-    // 当前节点的值
-    let aRoot = this.arr[a];
-    // 当前节点所在的下标值
-    let aRootI = a;
-    while(aRoot !== aRootI) {
-      aRoot = this.arr[aRoot];
-      aRootI = aRoot;
+    while(a !== this.arr[a]) {
+      a = this.arr[a];
     }
-    return aRoot;
+    return a;
+  }
+  // 将两个元素所在的根节点联结起来，使b->root元素的值为a->root元素的值
+  // 如果一个元素的值等于它的下标（即初始值），那么这个元素是一个根节点
+  union(a, b) {
+    if(this.find(a,b)) return;
+      this.count--;
+      let aRoot = this.getRoot(a);
+      let bRoot = this.getRoot(b);
+    // 判断子树的大小，使每次联结都是小树联结到大树上
+      if(this.sizeArr[aRoot] < this.sizeArr[bRoot]) {
+        this.arr[aRoot] = this.arr[bRoot];
+        this.sizeArr[bRoot] += this.sizeArr[aRoot];
+        this.sizeArr[aRoot] = 0;
+      } else {
+        this.arr[bRoot] = this.arr[aRoot];
+        this.sizeArr[aRoot] += this.sizeArr[bRoot];
+        this.sizeArr[bRoot] = 0;
+      }
+  }
+}
+
+/**
+ * 并查集实现之 路径优化的加权fast-union算法
+ *
+ * @class UnionFindByFastUnion3
+ */
+class UnionFindByFastUnion3 {
+  constructor(N){
+    this.arr = new Array(N).fill(0);
+    // 增加一个数组，记录节点为根节点的所在的联通分量的元素数量
+    this.sizeArr = new Array(N).fill(1);
+    this.count = N;
+    this.arr = this.arr.map((i, k) => k);
+  }
+  // 如果两个元素的根节点不是同一个，则不属于同一个联通分量
+  find(a, b) {
+    return this.getRoot(a) === this.getRoot(b);
+  }
+  // 查找元素的根节点所在的下标
+  getRoot(a) {
+    while(a !== this.arr[a]) {
+      // 查询根节点的时候顺便将该节点的父节点直接指向根节点，压缩路径
+      this.arr[a] = this.arr[this.arr[a]];
+      a = this.arr[a];
+    }
+    return a;
   }
   // 将两个元素所在的根节点联结起来，使b->root元素的值为a->root元素的值
   // 如果一个元素的值等于它的下标（即初始值），那么这个元素是一个根节点
@@ -103,6 +139,7 @@ class UnionFindByFastUnion2 {
       let aRoot = this.getRoot(a);
       let bRoot = this.getRoot(b);
 
+    // 判断子树的大小，使每次联结都是小树联结到大树上, 并且将小树上的每一个元素的父元素都设为大树的根节点，这样大树永远只要两层
       if(this.sizeArr[aRoot] < this.sizeArr[bRoot]) {
         this.arr[aRoot] = this.arr[bRoot];
         this.sizeArr[bRoot] += this.sizeArr[aRoot];
