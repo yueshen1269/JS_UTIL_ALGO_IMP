@@ -7,14 +7,14 @@
  * @returns
  */
 function myNew() {
-  // 创建一个实例对象
+  // 1 创建一个实例对象
   var obj = new Object();
   // 取得外部传入的构造器,即构造函数
   var Constructor = Array.prototype.shift.call(arguments);
-  // 实现继承，实例可以访问构造器的属性
+  // 2 实现继承，实例可以访问构造器的属性
   obj.__proto__ = Constructor.prototype;
-  // 调用构造器，并改变其 this 指向到实例
+  // 3 调用构造器，并改变其 this 指向到实例
   var ret = Constructor.apply(obj, arguments);
-  // 如果构造函数返回值是对象则返回这个对象，如果不是对象则返回新的实例对象
-  return typeof ret === 'object' && ret !== null ? ret : obj;
+  // 4 如果构造函数返回值是对象则返回这个对象，是函数则返回这个函数，如果不是对象或者函数则返回新的实例对象
+  return (typeof ret === 'object' && ret !== null || typeof ret === 'function') ? ret : obj;
 }
