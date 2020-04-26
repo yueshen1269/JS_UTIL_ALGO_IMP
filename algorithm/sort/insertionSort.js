@@ -3,8 +3,8 @@ class InsertionSort {
   // 插入排序实现
   static sort(arr) {
     for(let i=1; i<arr.length; i++) {
-      for(let j=i-1; j>=0 && this.less(arr[j+1], arr[j]); j--) {
-        this.exch(arr, j, j+1);
+      for(let j=i; j>0 && this.less(arr[j], arr[j-1]); j--) {
+        this.exch(arr, j, j-1);
       }
     }
   }
