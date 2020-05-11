@@ -26,7 +26,7 @@ class MergeSort {
     while(len--) {
       if(i>mid) temp[s++] = a[j++];
       else if(j>high) temp[s++] = a[i++];
-      else if(a[i]<=a[j]) temp[s++] = a[i++];
+      else if(less(a, i, j)) temp[s++] = a[i++];
       else temp[s++] = a[j++];
     }
     s = 0;
